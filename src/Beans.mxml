@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<swiz:BeanProvider xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:swiz="http://swiz.swizframework.org" 
+				   xmlns:local="*" >
+	<fx:Declarations>
+			<s:HTTPService id="flickrService" url="http://api.flickr.com/services/rest/?method=flickr.test.echo&amp;name=value" resultFormat="text"/>
+			<local:FlickrDelegate/>
+	</fx:Declarations>
+
+		
+</swiz:BeanProvider>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:swiz="http://swiz.swizframework.org" xmlns:common="common.*" xmlns:local="*">
+	<fx:Declarations>
+		<swiz:Swiz id="swiz">
+	
+			<swiz:beanProviders>
+				<local:Beans/>
+			</swiz:beanProviders>
+			
+			<swiz:config>
+				<swiz:SwizConfig eventPackages="common.events"/>				
+			</swiz:config>
+	
+			<swiz:aop>
+				<common:NetworkStatusAdvisor dispatcher="{this}"/>
+			</swiz:aop>
+		
+		</swiz:Swiz>
+
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import common.events.LoadingEvent;
+			
+			import mx.rpc.AsyncToken;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import org.swizframework.utils.services.ServiceHelper;
+			
+			public var serviceHelper:ServiceHelper = new ServiceHelper();
+			
+			[Inject]
+			public var delegate:FlickrDelegate;
+			
+			[Bindable]
+			public var eventLog:String = "";
+			
+			public function testFlickr():void
+			{
+				serviceHelper.executeServiceCall(delegate.test(),onFlickrResult,onFlickrFault);
+			}
+			
+			private function onFlickrResult(event:ResultEvent):void
+			{
+				eventLog += "Result:"+event.result+"\n";
+			}
+			
+			private function onFlickrFault(event:FaultEvent):void
+			{
+				eventLog += "Fault:"+event.fault.faultString+"\n";
+			}			
+
+			[EventHandler(event="LoadingEvent.LOADING")]
+			[EventHandler(event="LoadingEvent.LOADED")]
+			public function onNetworkStatus(event:LoadingEvent):void
+			{
+				eventLog += "NetworkStatus:"+event.type+"\n";				
+			}
+		]]>
+	</fx:Script>
+
+	<s:Button label="Test Service Call" click="testFlickr()" horizontalCenter="0" verticalCenter="0" scaleX="2" scaleY="2"/>
+
+	<s:BorderContainer borderColor="#ff0000" backgroundColor="#eeeeee" horizontalCenter="0" top="0" width="500" maxHeight="200">
+		<s:Scroller width="100%" height="100%">
+			<s:Group width="100%" height="100%">
+				<s:Label text="{eventLog}" width="100%"/>
+			</s:Group>
+		</s:Scroller>
+	</s:BorderContainer>
+
+</s:Application>
